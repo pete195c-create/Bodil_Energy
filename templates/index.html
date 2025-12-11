@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bodil Energi Support</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- BODIL BRAND COLORS & THEME --- */
+        :root {
+            --bodil-green: #1a3b34;  /* Den mørke brand farve */
+            --bodil-light: #f8f7f5;  /* Den lyse baggrundsfarve */
+            --bodil-accent: #c4e4c6; /* En lys grøn accent */
+            --text-color: #333333;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bodil-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- CHAT CONTAINER --- */
+        .chat-container {
+            width: 100%;
+            max-width: 600px; /* Bredden på chatvinduet */
+            background-color: var(--white);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh; /* Fylder 90% af højden på skærmen */
+        }
+
+        /* --- HEADER --- */
+        .chat-header {
+            background-color: var(--bodil-green);
+            color: var(--white);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--bodil-green);
+            font-size: 18px;
+        }
+
+        .header-info h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-info p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* --- CHAT HISTORY AREA --- */
+        .chat-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* --- BUBBLES --- */
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 12px;
+            line-height: 1.5;
+            font-size: 15px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bot Message Style */
+        .bot-message {
+            background-color: #eff1f0; /* Lys grålig/grøn */
+            color: var(--bodil-green);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        /* User Message Style */
+        .user-message {
+            background-color: var(--bodil-green);
+            color: var(--white);
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        /* --- INPUT AREA --- */
+        .input-area {
+            padding: 20px;
+            background-color: var(--white);
+            border-top: 1px solid #eeeeee;
+        }
+
+        .input-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--bodil-green);
+        }
+
+        button {
+            background-color: var(--bodil-green);
+            color: var(--white);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #142e29;
+        }
+
+        /* Loading indicator */
+        /* Loading indicator - NY OG TYDELIG */
+        .loading {
+            display: none;
+            font-size: 16px;         /* Gjort større (var 12px) */
+            font-weight: 600;        /* Gjort federe */
+            color: var(--bodil-green); /* Bruger nu den grønne brand-farve */
+            font-style: italic;      /* Kursiv ser godt ud til "tænker..." */
+            margin-top: 10px;
+            margin-left: 15px;
+            animation: pulse 1.5s infinite ease-in-out; /* Lille pæn animation */
+        }
+
+        /* Animation der får teksten til at blinke langsomt */
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="avatar">B</div>
+            <div class="header-info">
+                <h1>Bodil Energi AI</h1>
+                <p>Support & Rådgivning</p>
+            </div>
+        </div>
+
+        <div class="chat-area" id="chatbox">
+            
+            {% if not svar %}
+            <div class="message bot-message">
+                Hej! 👋 Jeg er din digitale assistent. <br>
+                Jeg kender alt til vores varmepumper, BEAM-bokse og solceller. Hvad kan jeg hjælpe med?
+            </div>
+            {% endif %}
+
+            {% if svar %}
+                <div class="message user-message">
+                   {{ sporgsmaal }}
+                </div>
+
+                <div class="message bot-message">
+                    {{ svar }}
+                </div>
+            {% endif %}
+            
+            <div id="loading-text" class="loading">Bodil tænker...</div>
+        </div>
+
+        <div class="input-area">
+            <form class="input-form" method="POST" action="/" onsubmit="showLoading()">
+                <input type="text" name="sporgsmaal" placeholder="Skriv dit spørgsmål her..." required autocomplete="off">
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // En lille script der scroller ned til bunden, når siden loader
+        window.onload = function() {
+            var chatbox = document.getElementById("chatbox");
+            chatbox.scrollTop = chatbox.scrollHeight;
+        };
+
+        // Viser "Bodil tænker..." når man trykker send
+        function showLoading() {
+            document.getElementById("loading-text").style.display = "block";
+            // Tilføj brugerens besked visuelt med det samme (valgfrit)
+        }
+    </script>
+
+</body>
+</html>
